@@ -26,6 +26,7 @@ class MusicNotificationManager(
 
     init {
         val mediaController = MediaControllerCompat(context, sessionToken)
+
         notificationManager = PlayerNotificationManager.Builder(
             context,
             NOTIFICATION_ID,
@@ -74,9 +75,7 @@ class MusicNotificationManager(
                         callback.onBitmap(resource)
                     }
 
-                    override fun onLoadCleared(placeholder: Drawable?) {
-
-                    }
+                    override fun onLoadCleared(placeholder: Drawable?) = Unit
 
                 })
             return null
