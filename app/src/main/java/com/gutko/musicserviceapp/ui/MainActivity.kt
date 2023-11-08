@@ -1,8 +1,9 @@
-package com.gutko.musicserviceapp
+package com.gutko.musicserviceapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.bumptech.glide.RequestManager
+import com.gutko.musicserviceapp.R
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
