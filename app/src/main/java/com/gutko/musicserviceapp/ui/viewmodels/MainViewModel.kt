@@ -2,7 +2,6 @@ package com.gutko.musicserviceapp.ui.viewmodels
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,8 +12,11 @@ import com.gutko.musicserviceapp.exoplayer.MusicServiceConnection
 import com.gutko.musicserviceapp.exoplayer.isPlayEnabled
 import com.gutko.musicserviceapp.exoplayer.isPlaying
 import com.gutko.musicserviceapp.exoplayer.isPrepared
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MainViewModel @ViewModelInject constructor(
+@HiltViewModel
+class MainViewModel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection
 ) : ViewModel() {
 
