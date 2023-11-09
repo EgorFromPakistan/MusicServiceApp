@@ -1,7 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+    id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
 }
 
@@ -29,11 +31,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 }
 
@@ -44,9 +46,6 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-
-    // Architectural Components
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
@@ -68,16 +67,17 @@ dependencies {
 
     // Glide
     implementation("com.github.bumptech.glide:glide:4.13.2")
-    ksp("com.github.bumptech.glide:compiler:4.11.0")
+    kapt("com.github.bumptech.glide:compiler:4.11.0")
 
     // Activity KTX for viewModels()
     implementation("androidx.activity:activity-ktx:1.8.0")
 
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+
     //Dagger - Hilt
-    implementation("com.google.dagger:hilt-android:2.31-alpha")
-    ksp("com.google.dagger:hilt-android-compiler:2.28-alpha")
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-    ksp("androidx.hilt:hilt-compiler:1.1.0-rc01")
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.1.0")
 
     // Timber
     implementation("com.jakewharton.timber:timber:4.7.1")
