@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import com.gutko.musicserviceapp.R
 import com.gutko.musicserviceapp.data.entities.Song
 
-class SwipeSongAdapter : BaseSongAdapter(R.layout.list_item) {
+class SwipeSongAdapter : BaseSongAdapter(R.layout.swipe_item) {
 
     override val differ: AsyncListDiffer<Song> = AsyncListDiffer(this, diffCallback)
 
