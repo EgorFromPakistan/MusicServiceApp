@@ -2,14 +2,10 @@ package com.gutko.musicserviceapp.adapters
 
 import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
-import com.bumptech.glide.RequestManager
 import com.gutko.musicserviceapp.R
 import com.gutko.musicserviceapp.data.entities.Song
-import javax.inject.Inject
 
-class SongAdapter @Inject constructor(
-    private val glide: RequestManager
-) : BaseSongAdapter(R.layout.list_item) {
+class SwipeSongAdapter : BaseSongAdapter(R.layout.swipe_item) {
 
     override val differ: AsyncListDiffer<Song> = AsyncListDiffer(this, diffCallback)
 
@@ -17,9 +13,9 @@ class SongAdapter @Inject constructor(
         val song = songs[position]
 
         holder.itemView.apply {
-            findViewById<TextView>(R.id.tvPrimary).text = song.title
-            findViewById<TextView>(R.id.tvSecondary).text = song.subtitle
-            glide.load(song.imageUrl).into(findViewById(R.id.ivItemImage))
+
+            val title = "${song.title} - ${song.subtitle}"
+            findViewById<TextView>(R.id.tvPrimary).text = title
 
             setOnClickListener {
                 onItemClickListener?.let { click ->
