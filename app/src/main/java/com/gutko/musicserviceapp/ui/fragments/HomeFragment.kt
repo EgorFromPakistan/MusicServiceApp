@@ -32,7 +32,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         allSongsProgressBar = view.findViewById(R.id.allSongsProgressBar)
         rvAllSongs = view.findViewById(R.id.rvAllSongs)
 
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         setupRecyclerView()
         subscribeObservers()
 
