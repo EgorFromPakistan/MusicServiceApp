@@ -22,10 +22,10 @@ class SongViewModel @Inject constructor(
     private val playbackState = musicServiceConnection.playBackState
 
     private val _curSongDuration = MutableLiveData<Long>()
-    private val curSongDuration: LiveData<Long> = _curSongDuration
+    val curSongDuration: LiveData<Long> = _curSongDuration
 
     private val _curPlayerPosition = MutableLiveData<Long>()
-    private val curPlayerPosition: LiveData<Long> = _curPlayerPosition
+    val curPlayerPosition: LiveData<Long> = _curPlayerPosition
 
     init {
         updateCurrentPlayerPosition()
