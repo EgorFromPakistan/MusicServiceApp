@@ -1,10 +1,13 @@
 package com.gutko.musicserviceapp.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.ImageView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bumptech.glide.RequestManager
@@ -35,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private var vpSong: ViewPager2? = null
     private var ivCurSongImage: ImageView? = null
     private var ivPlayPause: ImageView? = null
+    private var navHostFragment: Fragment? = null
 
     private var playBackState: PlaybackStateCompat? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +67,39 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment).apply {
+            navHostFragment?.findNavController()
+                ?.addOnDestinationChangedListener { _, destination, _ ->
+                    when (destination.id) {
+                        R.id.songFragment -> {
+                            hideBottomBar()
+                        }
+
+                        R.id.homeFragment -> {
+                            showBottomBAr()
+                        }
+
+                        else -> {
+                            showBottomBAr()
+                        }
+                    }
+                }
+        }
+        swipeSongAdapter.setItemClickListener {
+            navHostFragment?.findNavController()?.navigate(R.id.globalActionToSongFragment)
+        }
+    }
+
+    private fun hideBottomBar() {
+        ivCurSongImage?.isVisible = false
+        vpSong?.isVisible = false
+        ivPlayPause?.isVisible = false
+    }
+
+    private fun showBottomBAr() {
+        ivCurSongImage?.isVisible = true
+        vpSong?.isVisible = true
+        ivPlayPause?.isVisible = true
     }
 
     private fun subscribeToObservers() {

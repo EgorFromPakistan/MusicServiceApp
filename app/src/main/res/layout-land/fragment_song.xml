@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/cardview_shadow_start_color"
     tools:context=".ui.MainActivity">
 
     <com.google.android.material.textview.MaterialTextView
@@ -32,9 +33,9 @@
         android:id="@+id/tvCurTime"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:gravity="center"
         android:text="00:00"
-        android:layout_marginStart="16dp"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/seekBar"
         app:layout_constraintStart_toEndOf="@+id/ivSongImage"
@@ -53,9 +54,9 @@
         android:id="@+id/tvSongDuration"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:gravity="center"
         android:text="00:00"
-        android:layout_marginEnd="16dp"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/seekBar"
         app:layout_constraintEnd_toEndOf="parent"
