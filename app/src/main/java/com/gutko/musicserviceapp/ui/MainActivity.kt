@@ -2,13 +2,10 @@ package com.gutko.musicserviceapp.ui
 
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
-import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bumptech.glide.RequestManager
 import com.google.android.material.snackbar.Snackbar
@@ -16,6 +13,7 @@ import com.gutko.musicserviceapp.R
 import com.gutko.musicserviceapp.adapters.SwipeSongAdapter
 import com.gutko.musicserviceapp.data.entities.Song
 import com.gutko.musicserviceapp.data.other.Status
+import com.gutko.musicserviceapp.databinding.ActivityMainBinding
 import com.gutko.musicserviceapp.exoplayer.isPlaying
 import com.gutko.musicserviceapp.exoplayer.toSong
 import com.gutko.musicserviceapp.ui.viewmodels.MainViewModel
@@ -24,6 +22,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -35,39 +35,36 @@ class MainActivity : AppCompatActivity() {
 
     private var curPlayingSong: Song? = null
 
-    private var vpSong: ViewPager2? = null
-    private var ivCurSongImage: ImageView? = null
-    private var ivPlayPause: ImageView? = null
-    private var navHostFragment: Fragment? = null
-
     private var playBackState: PlaybackStateCompat? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         subscribeToObservers()
 
-        vpSong = findViewById<ViewPager2>(R.id.vpSong).apply {
-            adapter = swipeSongAdapter
-            registerOnPageChangeCallback(object : OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    if (playBackState?.isPlaying == true) {
-                        mainViewModel.playOrToggleSong(swipeSongAdapter.songs[position])
-                    } else {
-                        curPlayingSong = swipeSongAdapter.songs[position]
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment)
+
+        with(binding) {
+            vpSong.apply {
+                adapter = swipeSongAdapter
+                registerOnPageChangeCallback(object : OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        super.onPageSelected(position)
+                        if (playBackState?.isPlaying == true) {
+                            mainViewModel.playOrToggleSong(swipeSongAdapter.songs[position])
+                        } else {
+                            curPlayingSong = swipeSongAdapter.songs[position]
+                        }
+                    }
+                })
+            }
+            ivPlayPause.apply {
+                setOnClickListener {
+                    curPlayingSong?.let {
+                        mainViewModel.playOrToggleSong(it, true)
                     }
                 }
-            })
-        }
-        ivCurSongImage = findViewById(R.id.ivCurSongImage)
-        ivPlayPause = findViewById<ImageView?>(R.id.ivPlayPause)?.apply {
-            setOnClickListener {
-                curPlayingSong?.let {
-                    mainViewModel.playOrToggleSong(it, true)
-                }
             }
-        }
-        navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment).apply {
             navHostFragment?.findNavController()
                 ?.addOnDestinationChangedListener { _, destination, _ ->
                     when (destination.id) {
@@ -84,22 +81,22 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-        }
-        swipeSongAdapter.setItemClickListener {
-            navHostFragment?.findNavController()?.navigate(R.id.globalActionToSongFragment)
+            swipeSongAdapter.setItemClickListener {
+                navHostFragment?.findNavController()?.navigate(R.id.globalActionToSongFragment)
+            }
         }
     }
 
-    private fun hideBottomBar() {
-        ivCurSongImage?.isVisible = false
-        vpSong?.isVisible = false
-        ivPlayPause?.isVisible = false
+    private fun ActivityMainBinding.hideBottomBar() {
+        ivCurSongImage.isVisible = false
+        vpSong.isVisible = false
+        ivPlayPause.isVisible = false
     }
 
-    private fun showBottomBAr() {
-        ivCurSongImage?.isVisible = true
-        vpSong?.isVisible = true
-        ivPlayPause?.isVisible = true
+    private fun ActivityMainBinding.showBottomBAr() {
+        ivCurSongImage.isVisible = true
+        vpSong.isVisible = true
+        ivPlayPause.isVisible = true
     }
 
     private fun subscribeToObservers() {
@@ -109,11 +106,11 @@ class MainActivity : AppCompatActivity() {
                     result.data?.let { songs ->
                         swipeSongAdapter.songs = songs
                         if (songs.isNotEmpty()) {
-                            ivCurSongImage?.let { imageView ->
+                            binding.ivCurSongImage.let { imageView ->
                                 glide.load(curPlayingSong ?: songs[0]).into(imageView)
                             }
                         }
-                        switchViewToCurrentSong(curPlayingSong ?: return@observe)
+                        binding.switchViewToCurrentSong(curPlayingSong ?: return@observe)
                     }
                 }
 
@@ -124,14 +121,14 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.curPlayingSong.observe(this) {
             if (it == null) return@observe
             curPlayingSong = it.toSong()
-            ivCurSongImage?.let { imageView ->
+            binding.ivCurSongImage.let { imageView ->
                 glide.load(curPlayingSong?.imageUrl).into(imageView)
             }
-            switchViewToCurrentSong(curPlayingSong ?: return@observe)
+            binding.switchViewToCurrentSong(curPlayingSong ?: return@observe)
         }
         mainViewModel.playbackState.observe(this) {
             playBackState = it
-            ivPlayPause?.setImageResource(
+            binding.ivPlayPause.setImageResource(
                 if (playBackState?.isPlaying == true) {
                     R.drawable.ic_pause
                 } else {
@@ -171,10 +168,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun switchViewToCurrentSong(song: Song) {
+    private fun ActivityMainBinding.switchViewToCurrentSong(song: Song) {
         val newItemIndex = swipeSongAdapter.songs.indexOf(song)
         if (newItemIndex != -1) {
-            vpSong?.currentItem = newItemIndex
+            vpSong.currentItem = newItemIndex
             curPlayingSong = song
         }
     }

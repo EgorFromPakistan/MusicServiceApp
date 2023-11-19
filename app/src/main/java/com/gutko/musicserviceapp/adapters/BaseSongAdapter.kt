@@ -1,18 +1,12 @@
 package com.gutko.musicserviceapp.adapters
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.gutko.musicserviceapp.data.entities.Song
 
-abstract class BaseSongAdapter(
-    private val layoutId: Int
-) : RecyclerView.Adapter<BaseSongAdapter.SongViewHolder>() {
-
-    class SongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+abstract class BaseSongAdapter<VIEW_HOLDER : RecyclerView.ViewHolder> :
+    RecyclerView.Adapter<VIEW_HOLDER>() {
 
     protected val diffCallback = object : DiffUtil.ItemCallback<Song>() {
         override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
@@ -30,19 +24,7 @@ abstract class BaseSongAdapter(
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        return SongViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                layoutId,
-                parent,
-                false
-            )
-        )
-    }
-
-    override fun getItemCount(): Int {
-        return songs.size
-    }
+    override fun getItemCount(): Int = songs.size
 
     protected var onItemClickListener: ((Song) -> Unit)? = null
 
