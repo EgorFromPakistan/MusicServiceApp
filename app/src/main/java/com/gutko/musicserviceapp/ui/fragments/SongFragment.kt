@@ -2,18 +2,19 @@ package com.gutko.musicserviceapp.ui.fragments
 
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
+import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
-import com.google.android.material.textview.MaterialTextView
 import com.gutko.musicserviceapp.R
 import com.gutko.musicserviceapp.data.entities.Song
 import com.gutko.musicserviceapp.data.other.Status
+import com.gutko.musicserviceapp.databinding.FragmentSongBinding
 import com.gutko.musicserviceapp.exoplayer.isPlaying
 import com.gutko.musicserviceapp.exoplayer.toSong
 import com.gutko.musicserviceapp.ui.viewmodels.MainViewModel
@@ -24,7 +25,10 @@ import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SongFragment : Fragment(R.layout.fragment_song) {
+class SongFragment : Fragment() {
+
+    private var _binding: FragmentSongBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var glide: RequestManager
@@ -39,70 +43,71 @@ class SongFragment : Fragment(R.layout.fragment_song) {
 
     private var shouldUpdateSeekBar = true
 
-    private var tvSongName: MaterialTextView? = null
-    private var ivSongImage: ImageView? = null
-    private var seekBar: SeekBar? = null
-    private var ivSkipPrevious: ImageView? = null
-    private var ivSkip: ImageView? = null
-    private var ivPlayPauseDetail: ImageView? = null
-    private var tvCurTime: MaterialTextView? = null
-    private var tvSongDuration: MaterialTextView? = null
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSongBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tvSongName = view.findViewById(R.id.tvSongName)
-        ivSongImage = view.findViewById(R.id.ivSongImage)
-        seekBar = view.findViewById(R.id.seekBar)
-        ivSkipPrevious = view.findViewById<ImageView?>(R.id.ivSkipPrevious).apply {
-            setOnClickListener {
-                mainViewModel.skipToPreviousSong()
-            }
-        }
-        ivSkip = view.findViewById<ImageView?>(R.id.ivSkip).apply {
-            setOnClickListener {
-                mainViewModel.skipToNextSong()
-            }
-        }
-        ivPlayPauseDetail = view.findViewById<ImageView?>(R.id.ivPlayPauseDetail).apply {
-            setOnClickListener {
-                curPlayingSong?.let {
-                    mainViewModel.playOrToggleSong(it, true)
+        with(binding) {
+            ivSkipPrevious.apply {
+                setOnClickListener {
+                    mainViewModel.skipToPreviousSong()
                 }
             }
-        }
-        tvCurTime = view.findViewById(R.id.tvCurTime)
-        tvSongDuration = view.findViewById(R.id.tvSongDuration)
-
-        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        subscribeToObserves()
-
-        seekBar?.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if(fromUser){
-                    setCurPlayerTimeToTextView(progress.toLong())
+            ivSkip.apply {
+                setOnClickListener {
+                    mainViewModel.skipToNextSong()
+                }
+            }
+            ivPlayPauseDetail.apply {
+                setOnClickListener {
+                    curPlayingSong?.let {
+                        mainViewModel.playOrToggleSong(it, true)
+                    }
                 }
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                shouldUpdateSeekBar = false
-            }
+            mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+            subscribeToObserves()
 
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                seekBar?.let {
-                    mainViewModel.seekTo(it.progress.toLong())
-                    shouldUpdateSeekBar = true
+            seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
+                    if (fromUser) {
+                        setCurPlayerTimeToTextView(progress.toLong())
+                    }
                 }
-            }
-        })
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                    shouldUpdateSeekBar = false
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    seekBar?.let {
+                        mainViewModel.seekTo(it.progress.toLong())
+                        shouldUpdateSeekBar = true
+                    }
+                }
+            })
+        }
     }
 
-    private fun updateTitleAndSongImage(song: Song) {
+    private fun FragmentSongBinding.updateTitleAndSongImage(song: Song) {
         val title = "${song.title} - ${song.subtitle}"
-        tvSongName?.text = title
-        ivSongImage?.let { glide.load(song.imageUrl).into(it) }
+        tvSongName.text = title
+        ivSongImage.let { glide.load(song.imageUrl).into(it) }
     }
 
-    private fun subscribeToObserves() {
+    private fun FragmentSongBinding.subscribeToObserves() {
         mainViewModel.mediaItems.observe(viewLifecycleOwner) { result ->
             when (result.status) {
                 Status.SUCCESS -> {
@@ -124,30 +129,30 @@ class SongFragment : Fragment(R.layout.fragment_song) {
         }
         mainViewModel.playbackState.observe(viewLifecycleOwner) {
             playbackState = it
-            ivPlayPauseDetail?.setImageResource(
+            ivPlayPauseDetail.setImageResource(
                 if (playbackState?.isPlaying == true) {
                     R.drawable.ic_pause
                 } else {
                     R.drawable.ic_play
                 }
             )
-            seekBar?.progress = it?.position?.toInt() ?: 0
+            seekBar.progress = it?.position?.toInt() ?: 0
         }
         songViewModel.curPlayerPosition.observe(viewLifecycleOwner) {
             if (shouldUpdateSeekBar) {
-                seekBar?.progress = it.toInt()
+                seekBar.progress = it.toInt()
                 setCurPlayerTimeToTextView(it)
             }
         }
         songViewModel.curSongDuration.observe(viewLifecycleOwner) {
-            seekBar?.max = it.toInt()
+            seekBar.max = it.toInt()
             val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-            tvSongDuration?.text = dateFormat.format(it)
+            tvSongDuration.text = dateFormat.format(it)
         }
     }
 
-    private fun setCurPlayerTimeToTextView(ms: Long) {
+    private fun FragmentSongBinding.setCurPlayerTimeToTextView(ms: Long) {
         val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-        tvCurTime?.text = dateFormat.format(ms)
+        tvCurTime.text = dateFormat.format(ms)
     }
 }
