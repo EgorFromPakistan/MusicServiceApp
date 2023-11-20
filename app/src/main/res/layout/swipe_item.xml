@@ -7,11 +7,11 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvPrimary"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/match_constraint"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Title"
-        android:textSize="20sp"
+        android:textSize="@dimen/text_size_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
