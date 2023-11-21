@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
+import com.gutko.musicserviceapp.R
 import com.gutko.musicserviceapp.data.entities.Song
 import com.gutko.musicserviceapp.databinding.SwipeItemBinding
 
@@ -19,7 +20,12 @@ class SwipeSongAdapter : BaseSongAdapter<SwipeSongAdapter.SongViewHolder>() {
         val song = songs[position]
 
         with(holder.binding) {
-            tvPrimary.text = "${song.title} - ${song.subtitle}"
+            val title = String.format(
+                holder.itemView.context.getString(R.string.title_song),
+                song.title,
+                song.subtitle
+            )
+            tvPrimary.text = title
             root.setOnClickListener {
                 onItemClickListener?.let { click ->
                     click(song)
@@ -28,6 +34,5 @@ class SwipeSongAdapter : BaseSongAdapter<SwipeSongAdapter.SongViewHolder>() {
         }
     }
 
-    class SongViewHolder(val binding: SwipeItemBinding) :
-        RecyclerView.ViewHolder(binding.root)
+    class SongViewHolder(val binding: SwipeItemBinding) : RecyclerView.ViewHolder(binding.root)
 }
