@@ -146,13 +146,13 @@ class SongFragment : Fragment() {
         }
         songViewModel.curSongDuration.observe(viewLifecycleOwner) {
             seekBar.max = it.toInt()
-            val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
+            val dateFormat = SimpleDateFormat(getString(R.string.time_pattern), Locale.getDefault())
             tvSongDuration.text = dateFormat.format(it)
         }
     }
 
     private fun FragmentSongBinding.setCurPlayerTimeToTextView(ms: Long) {
-        val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
+        val dateFormat = SimpleDateFormat(getString(R.string.time_pattern), Locale.getDefault())
         tvCurTime.text = dateFormat.format(ms)
     }
 }

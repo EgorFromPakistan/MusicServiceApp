@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                     Status.ERROR -> {
                         Snackbar.make(
                             findViewById(R.id.rootLayout),
-                            result.message ?: "An unknown connection error occurred",
+                            result.message ?: getString(R.string.connection_error),
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity() {
                     Status.ERROR -> {
                         Snackbar.make(
                             findViewById(R.id.rootLayout),
-                            result.message ?: "An unknown network error occurred",
+                            result.message ?: getString(R.string.network_error),
                             Snackbar.LENGTH_LONG
                         ).show()
                     }

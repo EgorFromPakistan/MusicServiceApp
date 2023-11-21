@@ -6,7 +6,7 @@
     <dimen name="circle_radius">100dp</dimen>
 
     <dimen name="image_large_size">300dp</dimen>
-    <dimen name="image_medium_xx_size">75</dimen>
+    <dimen name="image_medium_xx_size">75dp</dimen>
     <dimen name="image_medium_x_size">50dp</dimen>
     <dimen name="image_medium_size">56dp</dimen>
     <dimen name="image_small_size">24dp</dimen>
