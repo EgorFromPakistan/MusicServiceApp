@@ -20,11 +20,8 @@ class SwipeSongAdapter : BaseSongAdapter<SwipeSongAdapter.SongViewHolder>() {
         val song = songs[position]
 
         with(holder.binding) {
-            val title = String.format(
-                holder.itemView.context.getString(R.string.title_song),
-                song.title,
-                song.subtitle
-            )
+            val title =
+                holder.itemView.context.getString(R.string.title_song, song.title, song.subtitle)
             tvPrimary.text = title
             root.setOnClickListener {
                 onItemClickListener?.let { click ->
